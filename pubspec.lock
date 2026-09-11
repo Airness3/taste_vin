@@ -470,7 +470,7 @@ packages:
     source: hosted
     version: "0.1.2"
   supabase_flutter:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: supabase_flutter
       sha256: "26eb3d3b71bcc5651551e64d6b131ba929ea261998570bbcc90356b1b42fd532"
@@ -622,5 +622,5 @@ packages:
     source: hosted
     version: "2.1.1"
 sdks:
-  dart: ">=3.13.2 <4.0.0"
+  dart: ">=3.12.0 <4.0.0"
   flutter: ">=3.44.0"

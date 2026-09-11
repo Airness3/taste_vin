@@ -43,7 +43,7 @@ class ScanCameraPage extends StatelessWidget {
                   Navigator.pushNamed(context, "/scan_result");
                 },
                 child: const Text(
-                  "Simuler un scan",
+                  "Simuler ,
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,

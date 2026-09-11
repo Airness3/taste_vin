@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
 
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
+
+  @override
+  State<SplashPage> createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 3), () {
+      Navigator.pushReplacementNamed(context, "/login");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A3D2E), // Vert bouteille Taste Vin
+      backgroundColor: Color(0xFFFFFBF9),
       body: Center(
-        child: Image.asset(
-          'assets/icons/icone_appli_clean.png',
-          width: 200,
-          height: 200,
-        ),
+        child: Text("TEST"),
       ),
     );
   }
