@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import '../services/wine_recognition_service.dart';
+import '../services/wine_profile_service.dart';
 
-class ScanResultPage extends StatelessWidget {
+class ScanResultPage extends StatefulWidget {
   final String ocrText;
   final int couleurId;
 
@@ -11,7 +13,78 @@ class ScanResultPage extends StatelessWidget {
   });
 
   @override
+  State<ScanResultPage> createState() =>
+      _ScanResultPageState();
+}
+
+class _ScanResultPageState extends State<ScanResultPage> {
+
+  final WineRecognitionService _recognitionService =
+    WineRecognitionService();
+
+final WineProfileService _profileService =
+    WineProfileService();
+
+bool _loading = true;
+
+Map<String, dynamic>? _wineProfile;
+
+String? _appellation;
+
+int? _millesime;
+
+@override
+void initState() {
+  super.initState();
+  _loadWine();
+}
+
+Future<void> _loadWine() async {
+  try {
+    final appellation =
+        await _recognitionService.findAppellation(
+      widget.ocrText,
+    );
+
+    final millesime =
+        _recognitionService.extractMillesime(
+      widget.ocrText,
+    );
+
+    if (appellation == null) {
+      setState(() {
+        _loading = false;
+        _millesime = millesime;
+      });
+      return;
+    }
+
+    final profile =
+        await _profileService.getWineProfile(
+      appellationId: appellation['id'],
+      couleurId: widget.couleurId,
+    );
+
+    setState(() {
+      _loading = false;
+
+      _appellation = appellation['nom'];
+
+      _millesime = millesime;
+
+      _wineProfile = profile;
+    });
+  } catch (e) {
+    debugPrint(e.toString());
+
+    setState(() {
+      _loading = false;
+    });
+  }
+}
+  @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       backgroundColor: const Color(0xFFFFFBF9),
 
@@ -33,15 +106,23 @@ class ScanResultPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
-              const Text(
-                "🍷 Fiche TasteVin",
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF0A3D2E),
-                ),
-              ),
+              Text(
+  _appellation ?? "🍷 Analyse du vin...",
+  style: const TextStyle(
+    fontSize: 26,
+    fontWeight: FontWeight.bold,
+    color: Color(0xFF0A3D2E),
+  ),
+),
+const SizedBox(height: 8),
 
+Text(
+  _millesime?.toString() ?? "",
+  style: const TextStyle(
+    fontSize: 18,
+    color: Colors.grey,
+  ),
+),
               const SizedBox(height: 30),
 
               const Text(
@@ -67,7 +148,7 @@ class ScanResultPage extends StatelessWidget {
                 ),
 
                 child: Text(
-                  ocrText,
+                  widget.ocrText,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
@@ -77,7 +158,7 @@ class ScanResultPage extends StatelessWidget {
               const SizedBox(height: 30),
 
               Text(
-                "Couleur sélectionnée : $couleurId",
+                "Couleur sélectionnée : ${widget.couleurId}",
                 style: const TextStyle(
                   fontSize: 18,
                 ),

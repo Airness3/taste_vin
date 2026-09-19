@@ -12,17 +12,35 @@ class WineRecognitionService {
 
     final normalizedText = ocrText.toLowerCase();
 
+    Map<String, dynamic>? bestMatch;
+
+    int longestLength = 0;
+
     for (final appellation in appellations) {
       final nom = appellation['nom']
           .toString()
           .toLowerCase();
 
-      if (normalizedText.contains(nom)) {
-        return appellation;
+      bool allWordsFound = true;
+
+      for (final word in nom.split(' ')) {
+        if (word.length < 3) continue;
+
+        if (!normalizedText.contains(word)) {
+          allWordsFound = false;
+          break;
+        }
+      }
+
+      if (allWordsFound) {
+        if (nom.length > longestLength) {
+          longestLength = nom.length;
+          bestMatch = appellation;
+        }
       }
     }
 
-    return null;
+    return bestMatch;
   }
 
   int? extractMillesime(String text) {
@@ -37,4 +55,3 @@ class WineRecognitionService {
     return null;
   }
 }
-``
