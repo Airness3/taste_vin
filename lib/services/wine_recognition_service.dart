@@ -6,50 +6,79 @@ class WineRecognitionService {
   Future<Map<String, dynamic>?> findAppellation(
     String ocrText,
   ) async {
+
     final appellations = await supabase
         .from('appellations')
         .select('id, nom');
 
-    final normalizedText = ocrText.toLowerCase();
+    final normalizedText = normalize(ocrText);
 
     Map<String, dynamic>? bestMatch;
 
-    int longestLength = 0;
+    int bestScore = 0;
 
     for (final appellation in appellations) {
-      final nom = appellation['nom']
-          .toString()
-          .toLowerCase();
 
-      bool allWordsFound = true;
+      final nom = normalize(
+        appellation['nom'].toString(),
+      );
+
+      int score = 0;
 
       for (final word in nom.split(' ')) {
-        if (word.length < 3) continue;
 
-        if (!normalizedText.contains(word)) {
-          allWordsFound = false;
-          break;
+        if (word.length < 3) {
+          continue;
+        }
+
+        if (normalizedText.contains(word)) {
+
+          // Les mots longs valent plus
+          score += word.length;
         }
       }
 
-      if (allWordsFound) {
-        if (nom.length > longestLength) {
-          longestLength = nom.length;
-          bestMatch = appellation;
-        }
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = appellation;
       }
     }
 
     return bestMatch;
   }
 
+  String normalize(String text) {
+
+    return text
+        .toLowerCase()
+        .replaceAll('é', 'e')
+        .replaceAll('è', 'e')
+        .replaceAll('ê', 'e')
+        .replaceAll('ë', 'e')
+        .replaceAll('à', 'a')
+        .replaceAll('â', 'a')
+        .replaceAll('ä', 'a')
+        .replaceAll('î', 'i')
+        .replaceAll('ï', 'i')
+        .replaceAll('ô', 'o')
+        .replaceAll('ö', 'o')
+        .replaceAll('ù', 'u')
+        .replaceAll('û', 'u')
+        .replaceAll('ü', 'u');
+  }
+
   int? extractMillesime(String text) {
-    final regex = RegExp(r'\b(19|20)\d{2}\b');
+
+    final regex = RegExp(
+      r'\b(19|20)\d{2}\b',
+    );
 
     final match = regex.firstMatch(text);
 
     if (match != null) {
-      return int.tryParse(match.group(0)!);
+      return int.tryParse(
+        match.group(0)!,
+      );
     }
 
     return null;
