@@ -1,5 +1,6 @@
 name: taste_vin
-description: "A new Flutter project."
+description: "TasteVin"
+
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -10,12 +11,19 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
   cupertino_icons: ^1.0.8
+
   supabase_flutter: ^2.0.0
+
+  image_picker: ^1.1.2
+
+  google_mlkit_text_recognition: ^0.13.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
   flutter_lints: ^6.0.0
 
 flutter:

@@ -1,77 +1,142 @@
 import 'package:flutter/material.dart';
-import 'package:taste_vin/widgets/taste_vin_loader.dart'; // ✔ ton loader Taste Vin
 
-class ScanResultPage extends StatefulWidget {
-  const ScanResultPage({super.key});
+class ScanResultPage extends StatelessWidget {
+  final String ocrText;
+  final int couleurId;
 
-  @override
-  State<ScanResultPage> createState() => _ScanResultPageState();
-}
-
-class _ScanResultPageState extends State<ScanResultPage> {
-  bool _loading = true;
-  Map<String, dynamic>? _result;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadResult();
-  }
-
-  Future<void> _loadResult() async {
-    await Future.delayed(const Duration(seconds: 2)); // simulation
-    setState(() {
-      _loading = false;
-      _result = {
-        "nom": "Château Margaux",
-        "annee": 2015,
-        "region": "Bordeaux",
-      };
-    });
-  }
+  const ScanResultPage({
+    super.key,
+    required this.ocrText,
+    required this.couleurId,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFBF9), // crème Taste Vin
+      backgroundColor: const Color(0xFFFFFBF9),
+
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A3D2E), // vert bouteille Taste Vin
+        backgroundColor: const Color(0xFF0A3D2E),
         title: const Text(
           "Résultat du scan",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(
+            color: Colors.white,
+          ),
         ),
       ),
 
-      body: _loading
-          ? const TasteVinLoader() // ✔ ton loader Taste Vin
-          : _resultView(),
-    );
-  }
+      body: Padding(
+        padding: const EdgeInsets.all(20),
 
-  Widget _resultView() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _result?["nom"] ?? "Vin inconnu",
-            style: const TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF0A3D2E),
-            ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+
+            children: [
+              const Text(
+                "🍷 Fiche TasteVin",
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF0A3D2E),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              const Text(
+                "Texte OCR détecté",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(16),
+
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+
+                child: Text(
+                  ocrText,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              Text(
+                "Couleur sélectionnée : $couleurId",
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+
+              const SizedBox(height: 40),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.restaurant),
+                  label: const Text(
+                    "Voir les conseils du sommelier",
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.wine_bar),
+                  label: const Text(
+                    "Ajouter à ma cave",
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.favorite),
+                  label: const Text(
+                    "Ajouter aux favoris",
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.star),
+                  label: const Text(
+                    "Noter ce vin",
+                  ),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            "Année : ${_result?["annee"]}",
-            style: const TextStyle(fontSize: 20),
-          ),
-          Text(
-            "Région : ${_result?["region"]}",
-            style: const TextStyle(fontSize: 20),
-          ),
-        ],
+        ),
       ),
     );
   }

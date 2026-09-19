@@ -28,7 +28,11 @@ class TasteVinApp extends StatelessWidget {
         '/login': (context) => const LoginPage(),
         '/home': (context) => const HomePage(),
         '/scan_camera': (context) => const ScanCameraPage(),
-        '/scan_result': (context) => const ScanResultPage(),
+        '/scan_result': (context) => const Scaffold(
+  body: Center(
+    child: Text('ScanResultPage appelée sans OCR'),
+  ),
+),
         '/cellar': (context) => const CellarPage(),
         '/profile': (context) => const ProfilePage(),
         '/favorites': (context) => const FavoritesPage(),
