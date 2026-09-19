@@ -67,8 +67,10 @@ class WineProfileService {
         'style': style,
         'cepages': cepages,
       };
-    } catch (e) {
-      return null;
-    }
+ } catch (e) {
+  throw Exception(
+    "WineProfileService ERROR : $e",
+  );
+}
   }
 }

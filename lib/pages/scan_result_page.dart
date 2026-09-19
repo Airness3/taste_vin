@@ -65,22 +65,25 @@ Future<void> _loadWine() async {
       couleurId: widget.couleurId,
     );
 
+
     setState(() {
-      _loading = false;
+  _loading = false;
 
-      _appellation = appellation['nom'];
+  _appellation = appellation['nom'];
 
-      _millesime = millesime;
+  _millesime = millesime;
 
-      _wineProfile = profile;
-    });
+ _wineProfile = profile;  
+});
   } catch (e) {
-    debugPrint(e.toString());
 
-    setState(() {
-      _loading = false;
-    });
-  }
+  setState(() {
+    _loading = false;
+
+    _appellation = e.toString();
+  });
+
+}  
 }
   @override
   Widget build(BuildContext context) {
@@ -106,76 +109,252 @@ Future<void> _loadWine() async {
             crossAxisAlignment: CrossAxisAlignment.start,
 
             children: [
-              Text(
-  _appellation ?? "🍷 Analyse du vin...",
-  style: const TextStyle(
-    fontSize: 26,
-    fontWeight: FontWeight.bold,
-    color: Color(0xFF0A3D2E),
-  ),
+
+  // HERO CARD
+
+  Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(24),
+
+    decoration: BoxDecoration(
+      gradient: const LinearGradient(
+        begin: Alignment.topLeft,
+        end: Alignment.bottomRight,
+        colors: [
+          Color(0xFF0A3D2E),
+          Color(0xFF14513F),
+        ],
+      ),
+      borderRadius: BorderRadius.circular(24),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.15),
+          blurRadius: 20,
+          offset: const Offset(0, 8),
+        ),
+      ],
+    ),
+
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+        const Text(
+          "🍷 Appellation",
+          style: TextStyle(
+            color: Colors.white70,
+            fontSize: 15,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Text(
+          _appellation ?? "Analyse en cours...",
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 14),
+
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 14,
+            vertical: 8,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.15),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: [
+
+    Text(
+      "Millésime ${_millesime ?? "-"}",
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 16,
+      ),
+    ),
+
+    const SizedBox(height: 10),
+  ],
 ),
-const SizedBox(height: 8),
-
-Text(
-  _millesime?.toString() ?? "",
-  style: const TextStyle(
-    fontSize: 18,
-    color: Colors.grey,
-  ),
 ),
-              const SizedBox(height: 30),
+      ],
+    ),
+  ),
 
-              const Text(
-                "Texte OCR détecté",
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+  const SizedBox(height: 20),
 
-              const SizedBox(height: 15),
+  // TERROIR
 
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(16),
+  if (_wineProfile != null)
+    Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
 
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.grey.shade300,
-                  ),
-                ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 12,
+          ),
+        ],
+      ),
 
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          const Text(
+            "📍 Terroir",
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF0A3D2E),
+            ),
+          ),
+
+          const SizedBox(height: 18),
+
+          Text(
+            "Région : ${_wineProfile!['region']?['nom'] ?? '-'}",
+            style: const TextStyle(
+              fontSize: 17,
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          Text(
+            "Sous-région : ${_wineProfile!['sousRegion']?['nom'] ?? '-'}",
+            style: const TextStyle(
+              fontSize: 17,
+            ),
+          ),
+        ],
+      ),
+    ),
+
+  const SizedBox(height: 20),
+if (_wineProfile != null)
+  Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.05),
+          blurRadius: 12,
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+        const Text(
+          "🍷 Style du vin",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0A3D2E),
+          ),
+        ),
+
+        const SizedBox(height: 15),
+
+        Text(
+          _wineProfile!['style']?['libelle'] ?? '-',
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+
+        const SizedBox(height: 8),
+
+        Text(
+          _wineProfile!['style']?['description'] ?? '',
+          style: const TextStyle(
+            fontSize: 15,
+            color: Colors.black54,
+            height: 1.4,
+          ),
+        ),
+      ],
+    ),
+  ),
+
+const SizedBox(height: 20),
+
+if (_wineProfile != null)
+  Container(
+    width: double.infinity,
+    padding: const EdgeInsets.all(20),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(20),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.05),
+          blurRadius: 12,
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+        const Text(
+          "🍇 Cépages",
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Color(0xFF0A3D2E),
+          ),
+        ),
+
+        const SizedBox(height: 16),
+
+        ...(_wineProfile!['cepages'] as List)
+            .map(
+              (cepage) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
-                  widget.ocrText,
+                  "• ${cepage['nom']}",
                   style: const TextStyle(
-                    fontSize: 16,
+                    fontSize: 17,
                   ),
                 ),
               ),
+            )
+            .toList(),
+      ],
+    ),
+  ),
 
-              const SizedBox(height: 30),
+const SizedBox(height: 20),
 
-              Text(
-                "Couleur sélectionnée : ${widget.couleurId}",
-                style: const TextStyle(
-                  fontSize: 18,
-                ),
-              ),
-
-              const SizedBox(height: 40),
-
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.restaurant),
-                  label: const Text(
-                    "Voir les conseils du sommelier",
-                  ),
-                ),
-              ),
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton.icon(
+    onPressed: () {},
+    icon: const Icon(Icons.restaurant),
+    label: const Text(
+      "Voir les conseils du sommelier",
+    ),
+  ),
+),
 
               const SizedBox(height: 12),
 
