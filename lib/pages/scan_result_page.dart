@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/wine_recognition_service.dart';
 import '../services/wine_profile_service.dart';
+import '../theme/app_colors.dart';
 
 class ScanResultPage extends StatefulWidget {
   final String ocrText;
@@ -89,14 +90,14 @@ Future<void> _loadWine() async {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFFBF9),
+      backgroundColor: AppColors.background,
 
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0A3D2E),
+        backgroundColor: AppColors.background,
         title: const Text(
           "Résultat du scan",
           style: TextStyle(
-            color: Colors.white,
+            color: AppColors.textPrimary,
           ),
         ),
       ),
@@ -118,13 +119,13 @@ Future<void> _loadWine() async {
 
     decoration: BoxDecoration(
       gradient: const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          Color(0xFF0A3D2E),
-          Color(0xFF14513F),
-        ],
-      ),
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  colors: [
+    AppColors.bottleGreen,
+    Color(0xFF091D17),
+  ],
+),
       borderRadius: BorderRadius.circular(24),
       boxShadow: [
         BoxShadow(
@@ -151,7 +152,7 @@ Future<void> _loadWine() async {
 
         Text(
           _appellation ?? "Analyse en cours...",
-          style: const TextStyle(
+          style: TextStyle(
             color: Colors.white,
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -175,7 +176,7 @@ Future<void> _loadWine() async {
 
     Text(
       "Millésime ${_millesime ?? "-"}",
-      style: const TextStyle(
+      style: TextStyle(
         color: Colors.white,
         fontSize: 16,
       ),
@@ -199,7 +200,7 @@ Future<void> _loadWine() async {
       padding: const EdgeInsets.all(20),
 
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.card,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
@@ -218,7 +219,7 @@ Future<void> _loadWine() async {
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF0A3D2E),
+              color: AppColors.copper,
             ),
           ),
 
@@ -226,7 +227,7 @@ Future<void> _loadWine() async {
 
           Text(
             "Région : ${_wineProfile!['region']?['nom'] ?? '-'}",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
             ),
           ),
@@ -235,7 +236,7 @@ Future<void> _loadWine() async {
 
           Text(
             "Sous-région : ${_wineProfile!['sousRegion']?['nom'] ?? '-'}",
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 17,
             ),
           ),
@@ -249,7 +250,7 @@ if (_wineProfile != null)
     width: double.infinity,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: AppColors.card,
       borderRadius: BorderRadius.circular(20),
       boxShadow: [
         BoxShadow(
@@ -267,7 +268,7 @@ if (_wineProfile != null)
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0A3D2E),
+            color: AppColors.copper,
           ),
         ),
 
@@ -275,7 +276,7 @@ if (_wineProfile != null)
 
         Text(
           _wineProfile!['style']?['libelle'] ?? '-',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
           ),
@@ -285,9 +286,9 @@ if (_wineProfile != null)
 
         Text(
           _wineProfile!['style']?['description'] ?? '',
-          style: const TextStyle(
+          style: TextStyle(
             fontSize: 15,
-            color: Colors.black54,
+            color: AppColors.textSecondary,
             height: 1.4,
           ),
         ),
@@ -302,7 +303,7 @@ if (_wineProfile != null)
     width: double.infinity,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
-      color: Colors.white,
+      color: AppColors.card,
       borderRadius: BorderRadius.circular(20),
       boxShadow: [
         BoxShadow(
@@ -320,7 +321,7 @@ if (_wineProfile != null)
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Color(0xFF0A3D2E),
+            color: AppColors.copper,
           ),
         ),
 
@@ -332,7 +333,7 @@ if (_wineProfile != null)
                 padding: const EdgeInsets.only(bottom: 8),
                 child: Text(
                   "• ${cepage['nom']}",
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 17,
                   ),
                 ),

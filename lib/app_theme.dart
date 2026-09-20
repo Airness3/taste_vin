@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
 class TasteVinTheme {
-  static const Color metalSilver = Color(0xFFC0C0C0);
-  static const Color vertBouteille = Color(0xFF0A3D2E);
-  static const Color creme = Color(0xFFF4E7A1);
-  static const Color ambre = Color(0xFFD45A1F);
+  static const Color vertBouteille =
+    Color(0xFF0F3D2E);
+
+static const Color creme =
+    Color(0xFF121212);
+
+static const Color ambre =
+    Color(0xFFD97706);
+
+static const Color metalSilver =
+    Color(0xFFF8F7F3);
   static const Color rubis = Color(0xFFA32020);
   static const Color bordeaux = Color(0xFF5A0F1A);
   static const Color or = Color(0xFFF7C468);
@@ -48,15 +55,11 @@ class TasteVinTheme {
           color: vertBouteille,
         ),
         bodyLarge: TextStyle(
-          fontFamily: 'Montserrat',
-          fontSize: 16,
-          color: bordeaux,
-        ),
+  color: metalSilver,
+),
         bodyMedium: TextStyle(
-          fontFamily: 'Montserrat',
-          fontSize: 14,
-          color: vertBouteille,
-        ),
+  color: metalSilver,
+),
       ),
 
       // APPBAR
@@ -97,7 +100,7 @@ class TasteVinTheme {
 
       // CARTES
       cardTheme: CardThemeData(
-        color: Colors.white,
+  color: const Color(0xFF1B1B1B),
         elevation: 6,
         shadowColor: Colors.black26,
         shape: RoundedRectangleBorder(
