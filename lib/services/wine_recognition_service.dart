@@ -4,8 +4,8 @@ class WineRecognitionService {
   final supabase = Supabase.instance.client;
 
   Future<Map<String, dynamic>?> findAppellation(
-    String ocrText,
-  ) async {
+  String ocrText,
+) async {
 
     final appellations = await supabase
         .from('appellations')

@@ -67,10 +67,10 @@ Future<void> _loadWine() async {
     }
 
     final profile =
-        await _profileService.getWineProfile(
-  appellationId: appellationId,
-  couleurId: couleurId,
-  millesime: _millesime,
+    await _profileService.getWineProfile(
+  appellationId: appellation['id'],
+  couleurId: widget.couleurId,
+  millesime: millesime,
 );
 
 

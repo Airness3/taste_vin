@@ -52,11 +52,31 @@ class WineProfileService {
       style['temperature_service_id'],
     );
 
-
-final temperature =
+      final temperature =
     temperatureResponse.isEmpty
         ? null
         : temperatureResponse.first;
+      final verreRelation = await supabase
+    .from('style_vin_verre')
+    .select()
+    .eq('style_vin_id', style['id'])
+    .order('priorite')
+    .limit(1);
+
+
+final verre = verreRelation.isEmpty
+    ? null
+    : await supabase
+        .from('types_verre')
+        .select()
+        .eq(
+          'id',
+          verreRelation.first['type_verre_id'],
+        )
+        .single();
+
+
+
 
       final relationsCepages = await supabase
           .from('appellation_cepage')
@@ -82,6 +102,7 @@ final temperature =
         'style': style,
         'cepages': cepages,
         'temperature': temperature,
+        'verre': verre,
       };
  } catch (e) {
   throw Exception(
