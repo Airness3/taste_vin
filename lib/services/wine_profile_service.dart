@@ -75,7 +75,55 @@ final verre = verreRelation.isEmpty
         )
         .single();
 
+String? typeVin;
 
+switch (couleurId) {
+  case 1:
+    typeVin = 'BLANC';
+    break;
+  case 2:
+    typeVin = 'ROUGE';
+    break;
+  case 4:
+    typeVin = 'CHAMPAGNE';
+    break;
+}
+
+Map<String, dynamic>? carafage;
+
+if (millesime != null && typeVin != null) {
+  final ageVin =
+      DateTime.now().year - millesime;
+
+  final regles = await supabase
+      .from('regle_carafage')
+      .select()
+      .eq('type_vin', typeVin);
+
+  final regle = regles.cast<Map<String, dynamic>?>().firstWhere(
+        (r) =>
+            ageVin >= r!['age_min'] &&
+            ageVin <= r['age_max'],
+        orElse: () => null,
+      );
+
+  if (regle != null) {
+    final preparation = await supabase
+        .from('type_preparation')
+        .select()
+        .eq(
+          'id',
+          regle['type_preparation_id'],
+        )
+        .single();
+
+    carafage = {
+      'type': preparation,
+      'regle': regle,
+      'ageVin': ageVin,
+    };
+  }
+}
 
 
       final relationsCepages = await supabase
@@ -103,6 +151,7 @@ final verre = verreRelation.isEmpty
         'cepages': cepages,
         'temperature': temperature,
         'verre': verre,
+        'carafage': carafage,
       };
  } catch (e) {
   throw Exception(
