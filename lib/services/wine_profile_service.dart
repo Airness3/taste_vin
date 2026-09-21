@@ -4,9 +4,10 @@ class WineProfileService {
   final supabase = Supabase.instance.client;
 
   Future<Map<String, dynamic>?> getWineProfile({
-    required int appellationId,
-    required int couleurId,
-  }) async {
+  required int appellationId,
+  required int couleurId,
+  int? millesime,
+}) async {
     try {
       final appellation = await supabase
           .from('appellations')
@@ -43,6 +44,20 @@ class WineProfileService {
           .eq('id', relationStyle['style_vin_id'])
           .single();
 
+      final temperatureResponse = await supabase
+    .from('temperatures_service')
+    .select()
+    .eq(
+      'id',
+      style['temperature_service_id'],
+    );
+
+
+final temperature =
+    temperatureResponse.isEmpty
+        ? null
+        : temperatureResponse.first;
+
       final relationsCepages = await supabase
           .from('appellation_cepage')
           .select()
@@ -66,6 +81,7 @@ class WineProfileService {
         'sousRegion': sousRegion,
         'style': style,
         'cepages': cepages,
+        'temperature': temperature,
       };
  } catch (e) {
   throw Exception(

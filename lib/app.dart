@@ -37,7 +37,6 @@ class TasteVinApp extends StatelessWidget {
         '/profile': (context) => const ProfilePage(),
         '/favorites': (context) => const FavoritesPage(),
         '/history': (context) => const HistoryPage(),
-        '/sommelier': (context) => const SommelierPage(),
         '/improve_database': (context) => const ImproveDatabasePage(),
       },
     );

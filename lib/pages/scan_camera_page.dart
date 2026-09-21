@@ -59,6 +59,7 @@ class _ScanCameraPageState extends State<ScanCameraPage> {
           builder: (context) => ScanResultPage(
             ocrText: text,
             couleurId: selectedColorId!,
+            imagePath: image.path,
           ),
         ),
       );

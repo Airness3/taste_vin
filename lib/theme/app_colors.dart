@@ -20,10 +20,13 @@ class AppColors {
       Color(0xFF121212);
 
   static const Color card =
-      Color(0xFF1B1B1B);
+    Color(0xFF1A3B31);
 
   static const Color cardSecondary =
       Color(0xFF222222);
+
+   static const Color actionCard =
+    Color(0xFF357860);
 
   // ===== Texte =====
 

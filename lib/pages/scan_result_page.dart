@@ -2,15 +2,21 @@ import 'package:flutter/material.dart';
 import '../services/wine_recognition_service.dart';
 import '../services/wine_profile_service.dart';
 import '../theme/app_colors.dart';
+import 'dart:io';
+import 'sommelier_page.dart';
+import 'cellar_page.dart';
+import 'favorites_page.dart';
 
 class ScanResultPage extends StatefulWidget {
   final String ocrText;
   final int couleurId;
+  final String imagePath;
 
   const ScanResultPage({
     super.key,
     required this.ocrText,
     required this.couleurId,
+    required this.imagePath,
   });
 
   @override
@@ -62,9 +68,10 @@ Future<void> _loadWine() async {
 
     final profile =
         await _profileService.getWineProfile(
-      appellationId: appellation['id'],
-      couleurId: widget.couleurId,
-    );
+  appellationId: appellationId,
+  couleurId: couleurId,
+  millesime: _millesime,
+);
 
 
     setState(() {
@@ -85,6 +92,63 @@ Future<void> _loadWine() async {
   });
 
 }  
+}
+Widget _buildPremiumButton({
+  required IconData icon,
+  required String title,
+  required VoidCallback onTap,
+}) {
+  return InkWell(
+    onTap: onTap,
+    borderRadius: BorderRadius.circular(20),
+    child: Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 18,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.actionCard,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: AppColors.silver.withOpacity(0.35),
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.45),
+            blurRadius: 25,
+            offset: const Offset(0, 10),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: AppColors.copper,
+            size: 24,
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          const Icon(
+            Icons.chevron_right,
+            color: AppColors.silver,
+            size: 24,
+          ),
+        ],
+      ),
+    ),
+  );
 }
   @override
   Widget build(BuildContext context) {
@@ -111,140 +175,99 @@ Future<void> _loadWine() async {
 
             children: [
 
-  // HERO CARD
+// HERO PHOTO PREMIUM
 
-  Container(
+ClipRRect(
+  borderRadius: BorderRadius.circular(24),
+  child: SizedBox(
     width: double.infinity,
-    padding: const EdgeInsets.all(24),
-
-    decoration: BoxDecoration(
-      gradient: const LinearGradient(
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-  colors: [
-    AppColors.bottleGreen,
-    Color(0xFF091D17),
-  ],
-),
-      borderRadius: BorderRadius.circular(24),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.15),
-          blurRadius: 20,
-          offset: const Offset(0, 8),
-        ),
-      ],
-    ),
-
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    height: 550,
+    child: Stack(
+      fit: StackFit.expand,
       children: [
 
-        const Text(
-          "🍷 Appellation",
-          style: TextStyle(
-            color: Colors.white70,
-            fontSize: 15,
-          ),
+        Image.file(
+          File(widget.imagePath),
+          fit: BoxFit.contain,
         ),
-
-        const SizedBox(height: 8),
-
-        Text(
-          _appellation ?? "Analyse en cours...",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-
-        const SizedBox(height: 14),
 
         Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 14,
-            vertical: 8,
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.transparent,
+                Colors.black87,
+              ],
+            ),
           ),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(20),
-          ),
+        ),
+
+        Positioned(
+          left: 24,
+          right: 24,
+          bottom: 24,
           child: Column(
-  crossAxisAlignment: CrossAxisAlignment.start,
-  children: [
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-    Text(
-      "Millésime ${_millesime ?? "-"}",
-      style: TextStyle(
-        color: Colors.white,
-        fontSize: 16,
-      ),
-    ),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.copper,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Text(
+                  "${_millesime ?? "-"}",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
 
-    const SizedBox(height: 10),
-  ],
-),
-),
+              const SizedBox(height: 12),
+
+              Text(
+                _appellation ?? "Analyse en cours...",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                  height: 1.1,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 10,
+                      color: Colors.black,
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              Text(
+                "${_wineProfile?['sousRegion']?['nom'] ?? ''} • ${_wineProfile?['region']?['nom'] ?? ''}",
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     ),
   ),
+),
 
-  const SizedBox(height: 20),
+const SizedBox(height: 20),
 
-  // TERROIR
-
-  if (_wineProfile != null)
-    Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-
-      decoration: BoxDecoration(
-        color: AppColors.card,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 12,
-          ),
-        ],
-      ),
-
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          const Text(
-            "📍 Terroir",
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: AppColors.copper,
-            ),
-          ),
-
-          const SizedBox(height: 18),
-
-          Text(
-            "Région : ${_wineProfile!['region']?['nom'] ?? '-'}",
-            style: TextStyle(
-              fontSize: 17,
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          Text(
-            "Sous-région : ${_wineProfile!['sousRegion']?['nom'] ?? '-'}",
-            style: TextStyle(
-              fontSize: 17,
-            ),
-          ),
-        ],
-      ),
-    ),
-
-  const SizedBox(height: 20),
 if (_wineProfile != null)
   Container(
     width: double.infinity,
@@ -303,15 +326,23 @@ if (_wineProfile != null)
     width: double.infinity,
     padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
-      color: AppColors.card,
-      borderRadius: BorderRadius.circular(20),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black.withOpacity(0.05),
-          blurRadius: 12,
-        ),
-      ],
+  color: AppColors.card,
+
+  borderRadius: BorderRadius.circular(20),
+
+  border: Border.all(
+    color: AppColors.copper.withOpacity(0.15),
+    width: 1,
+  ),
+
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.75),
+      blurRadius: 20,
+      offset: const Offset(0, 8),
     ),
+  ],
+),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -346,55 +377,66 @@ if (_wineProfile != null)
 
 const SizedBox(height: 20),
 
-SizedBox(
-  width: double.infinity,
-  child: ElevatedButton.icon(
-    onPressed: () {},
-    icon: const Icon(Icons.restaurant),
-    label: const Text(
-      "Voir les conseils du sommelier",
-    ),
-  ),
+_buildPremiumButton(
+  icon: Icons.restaurant,
+  title: "Conseils du sommelier",
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => SommelierPage(
+  wineProfile: _wineProfile!,
+),
+      ),
+    );
+  },
 ),
 
-              const SizedBox(height: 12),
+const SizedBox(height: 12),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.wine_bar),
-                  label: const Text(
-                    "Ajouter à ma cave",
-                  ),
-                ),
-              ),
+_buildPremiumButton(
+  icon: Icons.wine_bar,
+  title: "Ajouter à ma cave",
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CellarPage(),
+      ),
+    );
+  },
+),
 
-              const SizedBox(height: 12),
+const SizedBox(height: 12),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.favorite),
-                  label: const Text(
-                    "Ajouter aux favoris",
-                  ),
-                ),
-              ),
+_buildPremiumButton(
+  icon: Icons.favorite,
+  title: "Ajouter aux favoris",
+  onTap: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const FavoritesPage(),
+      ),
+    );
+  },
+),
 
-              const SizedBox(height: 12),
+const SizedBox(height: 12),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.star),
-                  label: const Text(
-                    "Noter ce vin",
-                  ),
-                ),
-              ),
+_buildPremiumButton(
+  icon: Icons.star,
+  title: "Noter ce vin",
+  onTap: () {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          "Module de notation bientôt disponible",
+        ),
+      ),
+    );
+  },
+),
             ],
           ),
         ),
