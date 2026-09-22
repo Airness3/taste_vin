@@ -166,6 +166,45 @@ final aromes = aromeIds.isEmpty
 print("AROMES");
 print(aromes);
 
+final boucheRelations = await supabase
+    .from('style_vin_bouche')
+    .select()
+    .eq('style_vin_id', style['id'])
+    .order('priorite');
+
+final boucheIds = boucheRelations
+    .map((e) => e['profil_bouche_id'])
+    .toList();
+
+final bouche = boucheIds.isEmpty
+    ? []
+    : await supabase
+        .from('profils_bouche')
+        .select()
+        .inFilter('id', boucheIds);
+
+print("BOUCHE");
+print(bouche);
+
+final accordsRelations = await supabase
+    .from('style_vin_accord')
+    .select()
+    .eq('style_vin_id', style['id'])
+    .order('priorite');
+
+final accordIds = accordsRelations
+    .map((e) => e['met_id'])
+    .toList();
+
+final accords = accordIds.isEmpty
+    ? []
+    : await supabase
+        .from('mets')
+        .select()
+        .inFilter('id', accordIds);
+
+print("ACCORDS");
+print(accords);
 
       final relationsCepages = await supabase
           .from('appellation_cepage')
@@ -195,6 +234,8 @@ print(aromes);
         'carafage': carafage,
         'robe': robe,
         'aromes': aromes,
+        'bouche': bouche,
+        'accords': accords,
       };
  } catch (e) {
   throw Exception(

@@ -15,6 +15,7 @@ class SommelierPage extends StatelessWidget {
     final carafage = wineProfile['carafage'];
     final robe = wineProfile['robe'];
     final aromes = wineProfile['aromes'];
+    final bouche = wineProfile['bouche'];
 
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
@@ -217,6 +218,32 @@ const SizedBox(height: 10),
 
 Text(
   aromes.toString(),
+  style: const TextStyle(
+    color: Colors.white,
+  ),
+),
+
+const SizedBox(height: 30),
+
+const Divider(
+  color: Colors.white24,
+),
+
+const SizedBox(height: 20),
+
+const Text(
+  "👄 Bouche",
+  style: TextStyle(
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  ),
+),
+
+const SizedBox(height: 10),
+
+Text(
+  bouche.toString(),
   style: const TextStyle(
     color: Colors.white,
   ),
