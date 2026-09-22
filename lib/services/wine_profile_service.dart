@@ -146,6 +146,26 @@ final robe = robeRelation.isEmpty
         print("ROBE");
 print(robe);
 
+final aromesRelations = await supabase
+    .from('style_vin_arome')
+    .select()
+    .eq('style_vin_id', style['id'])
+    .order('priorite');
+
+final aromeIds = aromesRelations
+    .map((e) => e['arome_id'])
+    .toList();
+
+final aromes = aromeIds.isEmpty
+    ? []
+    : await supabase
+        .from('aromes')
+        .select()
+        .inFilter('id', aromeIds);
+
+print("AROMES");
+print(aromes);
+
 
       final relationsCepages = await supabase
           .from('appellation_cepage')
@@ -174,6 +194,7 @@ print(robe);
         'verre': verre,
         'carafage': carafage,
         'robe': robe,
+        'aromes': aromes,
       };
  } catch (e) {
   throw Exception(
