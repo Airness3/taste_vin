@@ -10,29 +10,38 @@ class SommelierPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final temperature = wineProfile['temperature'];
+    final verre = wineProfile['verre'];
+    final carafage = wineProfile['carafage'];
+    final robe = wineProfile['robe'];
+
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
         backgroundColor: const Color(0xFF0A3D2E),
         title: const Text(
           "Conseils du Sommelier",
-          style: TextStyle(
-            color: Colors.white,
-          ),
+          style: TextStyle(color: Colors.white),
         ),
         iconTheme: const IconThemeData(
           color: Colors.white,
         ),
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-        child: SingleChildScrollView(
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: const Color(0xFF1A3B31),
+            borderRadius: BorderRadius.circular(24),
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
               const Text(
-                "DEBUG SOMMELIER",
+                "🍷 Conseils de dégustation",
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 26,
@@ -40,13 +49,150 @@ class SommelierPage extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 30),
+
+              const Text(
+                "🌡 Température de service",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
 
               Text(
-                wineProfile.toString(),
+                "${temperature['temp_min_c']}°C à ${temperature['temp_max_c']}°C",
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: 30,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              Text(
+                temperature['libelle'],
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              Text(
+                temperature['description'],
+                style: const TextStyle(
+                  color: Colors.white54,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              const Divider(color: Colors.white24),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "🍾 Carafage",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Text(
+                carafage['type']['libelle'],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 5),
+
+              Text(
+                "${carafage['regle']['duree_minutes']} minutes",
+                style: const TextStyle(
+                  color: Colors.white70,
+                  fontSize: 16,
+                ),
+              ),
+
+              const SizedBox(height: 5),
+
+              Text(
+                carafage['regle']['commentaire'],
+                style: const TextStyle(
+                  color: Colors.white54,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              const Divider(color: Colors.white24),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "🥂 Verre recommandé",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Text(
+                verre['nom'],
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 5),
+
+              Text(
+                verre['description'],
+                style: const TextStyle(
+                  color: Colors.white54,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              const Divider(color: Colors.white24),
+
+              const SizedBox(height: 20),
+
+              const Text(
+                "👁 Robe",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 10),
+
+              Text(
+                robe == null
+                    ? "Robe non disponible"
+                    : robe['libelle'].toString(),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ],

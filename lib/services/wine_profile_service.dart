@@ -125,6 +125,27 @@ if (millesime != null && typeVin != null) {
   }
 }
 
+final robeRelation = await supabase
+    .from('style_vin_robe')
+    .select()
+    .eq('style_vin_id', style['id'])
+    .order('priorite')
+    .limit(1);
+
+final robe = robeRelation.isEmpty
+    ? null
+    : await supabase
+        .from('robes')
+        .select()
+        .eq(
+          'id',
+          robeRelation.first['robe_id'],
+        )
+        .single();
+
+        print("ROBE");
+print(robe);
+
 
       final relationsCepages = await supabase
           .from('appellation_cepage')
@@ -152,6 +173,7 @@ if (millesime != null && typeVin != null) {
         'temperature': temperature,
         'verre': verre,
         'carafage': carafage,
+        'robe': robe,
       };
  } catch (e) {
   throw Exception(
