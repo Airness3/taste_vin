@@ -16,6 +16,7 @@ class SommelierPage extends StatelessWidget {
     final robe = wineProfile['robe'];
     final aromes = wineProfile['aromes'];
     final bouche = wineProfile['bouche'];
+    final accords = wineProfile['accords'];
 
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
@@ -247,6 +248,43 @@ Text(
   style: const TextStyle(
     color: Colors.white,
   ),
+),
+
+const SizedBox(height: 30),
+
+const Divider(
+  color: Colors.white24,
+),
+
+const SizedBox(height: 20),
+
+const Text(
+  "🍽 Accords mets-vins",
+  style: TextStyle(
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+  ),
+),
+
+const SizedBox(height: 10),
+
+Column(
+  crossAxisAlignment: CrossAxisAlignment.start,
+  children: (accords as List)
+      .map<Widget>(
+        (accord) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: Text(
+            "• ${accord['libelle']}",
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+            ),
+          ),
+        ),
+      )
+      .toList(),
 ),
             ],
           ),
