@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+  import 'package:flutter/material.dart';
 import '../services/wine_recognition_service.dart';
 import '../services/wine_profile_service.dart';
 import '../theme/app_colors.dart';
@@ -6,7 +6,7 @@ import 'dart:io';
 import 'sommelier_page.dart';
 import 'cellar_page.dart';
 import 'favorites_page.dart';
-import 'package:taste_vin/pages/sommelier_page_v2.dart';
+import 'package:taste_vin/pages/sommelier_page.dart';
 
 class ScanResultPage extends StatefulWidget {
   final String ocrText;
@@ -385,7 +385,7 @@ _buildPremiumButton(
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SommelierPageV2(
+        builder: (context) => SommelierPage(
   wineProfile: _wineProfile!,
 ),
       ),
