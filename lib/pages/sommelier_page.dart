@@ -173,12 +173,36 @@ Center(
 
       const SizedBox(height: 12),
 
-      Text(
-        '🥂 ${verre['nom']}',
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-        ),
+      Center(
+  child: Image.asset(
+    verre['image_url'],
+    height: 130,
+    fit: BoxFit.contain,
+  ),
+),
+
+const SizedBox(height: 12),
+
+Center(
+  child: Text(
+    verre['nom'],
+    style: const TextStyle(
+      color: Colors.white,
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
+
+const SizedBox(height: 8),
+
+Text(
+  verre['description'],
+  textAlign: TextAlign.center,
+  style: const TextStyle(
+    color: Colors.white70,
+    fontSize: 14,
+       ),
       ),
     ],
   ),
