@@ -39,7 +39,202 @@ final robePosition = {
 final aromes = wineProfile['aromes'];
 final bouche = wineProfile['bouche'];
 final accords = wineProfile['accords'];
+
 print(verre);
+String getAromeEmoji(String code) {
+  switch (code) {
+
+    // FRUITS
+
+    case 'CITRON': return '🍋';
+    case 'PAMPLEMOUSSE': return '🍊';
+    case 'ORANGE': return '🍊';
+    case 'MANDARINE': return '🍊';
+
+    case 'POIRE': return '🍐';
+    case 'POMME_VERTE': return '🍏';
+
+    case 'PECHE': return '🍑';
+    case 'ABRICOT': return '🍑';
+
+    case 'ANANAS': return '🍍';
+    case 'MANGUE': return '🥭';
+
+    case 'LITCHI': return '🌺';
+
+    case 'FRAISE': return '🍓';
+    case 'FRAMBOISE': return '🍓';
+
+    case 'GROSEILLE': return '🔴';
+
+    case 'CERISE': return '🍒';
+
+    case 'CASSIS': return '🫐';
+    case 'MYRTILLE': return '🫐';
+    case 'MURE': return '🫐';
+
+    case 'PRUNE': return '🟣';
+    case 'FIGUE': return '🟣';
+
+    case 'RAISIN_SEC': return '🍇';
+
+    // FLORAL
+
+    case 'ROSE': return '🌹';
+    case 'VIOLETTE': return '🪻';
+    case 'ACACIA': return '🌼';
+    case 'AUBEPINE': return '🌸';
+    case 'JASMIN': return '🌼';
+    case 'LAVANDE': return '🪻';
+    case 'TILLEUL': return '🍃';
+    case 'PIVOINE': return '🌸';
+    case 'FLEUR_BLANCHE': return '🤍';
+
+    // VEGETAL
+
+    case 'HERBE_COUPEE': return '🌿';
+    case 'FOUGERE': return '🌿';
+    case 'MENTHE': return '🌱';
+    case 'EUCALYPTUS': return '🌿';
+    case 'POIVRON': return '🫑';
+    case 'THE': return '🍵';
+    case 'FEUILLE_CASSIS': return '🍃';
+    case 'FOIN': return '🌾';
+
+    // EPICES
+
+    case 'POIVRE_NOIR': return '⚫';
+    case 'POIVRE_BLANC': return '⚪';
+    case 'CANNELLE': return '🪵';
+    case 'VANILLE': return '🌿';
+    case 'REGLISSE': return '🖤';
+    case 'CLOU_GIROFLE': return '🌰';
+    case 'MUSCADE': return '🌰';
+    case 'SAFRAN': return '🟠';
+
+    // BOISE
+
+    case 'CEDRE': return '🌲';
+    case 'CHENE': return '🌳';
+    case 'BOIS_TOASTE': return '🪵';
+    case 'BOIS_FUME': return '🔥';
+    case 'SANTAL': return '🪵';
+
+    // MINERAL
+
+    case 'SILEX': return '🪨';
+    case 'CRAIE': return '⚪';
+    case 'PIERRE_FUSIL': return '🪨';
+    case 'CALCAIRE': return '⛰️';
+    case 'IODE': return '🌊';
+
+    // TORREFACTION
+
+    case 'CAFE': return '☕';
+    case 'CACAO': return '🍫';
+    case 'CHOCOLAT': return '🍫';
+    case 'MOKA': return '☕';
+    case 'CARAMEL': return '🍮';
+
+    // FUME
+
+    case 'FUMEE': return '💨';
+    case 'TABAC': return '🍂';
+    case 'CUIR': return '🧥';
+    case 'GOUDRON': return '⬛';
+    case 'GRAPHITE': return '✏️';
+
+    // ANIMAL
+
+    case 'MUSC': return '🦌';
+    case 'VENAISON': return '🦌';
+    case 'CIRE': return '🕯️';
+    case 'ETABLE': return '🐴';
+
+    // RESINEUX
+
+    case 'PIN': return '🌲';
+    case 'RESINE': return '🌲';
+    case 'GENEVRIER': return '🌿';
+    case 'BAUME': return '🧴';
+
+    // EVOLUTION
+
+    case 'SOUS_BOIS': return '🍂';
+    case 'CHAMPIGNON': return '🍄';
+    case 'TRUFFE': return '🍄';
+    case 'NOIX': return '🥜';
+    case ' NOISETTE': return '🌰';
+    case 'MIEL': return '🍯';
+    case 'PAIN_GRILLE': return '🍞';
+    case 'BEURRE': return '🧈';
+
+    default:
+      return '🍷';
+  }
+}
+Color getAromeColor(int familleId) {
+  switch (familleId) {
+
+    case 1:
+      return const Color(0xFF6A1B9A); // Fruits
+
+    case 2:
+      return const Color(0xFFE91E63); // Floral
+
+    case 3:
+      return const Color(0xFF2E7D32); // Végétal
+
+    case 4:
+      return const Color(0xFFEF6C00); // Épices
+
+    case 5:
+      return const Color(0xFF6D4C41); // Boisé
+
+    case 6:
+      return const Color(0xFF546E7A); // Minéral
+
+    case 7:
+      return const Color(0xFF4E342E); // Torréfaction
+
+    case 8:
+      return const Color(0xFF263238); // Fumé
+
+    case 9:
+      return const Color(0xFF8E0000); // Animal
+
+    case 10:
+      return const Color(0xFF1B5E20); // Résineux
+
+    case 11:
+      return const Color(0xFFB8860B); // Évolution
+
+    default:
+      return const Color(0xFF444444);
+  }
+}
+Widget _legendChip(
+  String label,
+  Color color,
+) {
+  return Container(
+    padding: const EdgeInsets.symmetric(
+      horizontal: 12,
+      vertical: 8,
+    ),
+    decoration: BoxDecoration(
+      color: color,
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Text(
+      label,
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 12,
+      ),
+    ),
+  );
+}
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
@@ -345,6 +540,56 @@ const SizedBox(height: 20),
             fontWeight: FontWeight.bold,
           ),
         ),
+          Theme(
+  data: Theme.of(context).copyWith(
+    dividerColor: Colors.transparent,
+  ),
+  child: ExpansionTile(
+    iconColor: Colors.white70,
+    collapsedIconColor: Colors.white70,
+    title: const Text(
+      'ℹ️ Familles aromatiques',
+      style: TextStyle(
+        color: Colors.white70,
+        fontSize: 14,
+      ),
+    ),
+    children: [
+
+      Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+
+          _legendChip('🟣 Fruits', const Color(0xFF6A1B9A)),
+
+          _legendChip('🌸 Floral', const Color(0xFFE91E63)),
+
+          _legendChip('🟢 Végétal', const Color(0xFF2E7D32)),
+
+          _legendChip('🟠 Épices', const Color(0xFFEF6C00)),
+
+          _legendChip('🟤 Boisé', const Color(0xFF6D4C41)),
+
+          _legendChip('⚪ Minéral', const Color(0xFF546E7A)),
+
+          _legendChip('☕ Torréfaction', const Color(0xFF4E342E)),
+
+          _legendChip('⚫ Fumé', const Color(0xFF263238)),
+
+          _legendChip('🔴 Animal', const Color(0xFF8E0000)),
+
+          _legendChip('🌲 Résineux', const Color(0xFF1B5E20)),
+
+          _legendChip('🟡 Évolution', const Color(0xFFB8860B)),
+
+        ],
+      ),
+
+      const SizedBox(height: 12),
+    ],
+  ),
+),
 
         const SizedBox(height: 10),
 
@@ -359,11 +604,11 @@ const SizedBox(height: 20),
                     vertical: 8,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF2E2E2E),
+  color: getAromeColor(a['famille_id']),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    a['libelle'],
+  '${getAromeEmoji(a['code'])} ${a['libelle']}',
                     style: const TextStyle(
                       color: Colors.white,
                     ),
