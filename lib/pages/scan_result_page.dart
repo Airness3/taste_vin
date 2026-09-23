@@ -6,6 +6,7 @@ import 'dart:io';
 import 'sommelier_page.dart';
 import 'cellar_page.dart';
 import 'favorites_page.dart';
+import 'package:taste_vin/pages/sommelier_page_v2.dart';
 
 class ScanResultPage extends StatefulWidget {
   final String ocrText;
@@ -384,7 +385,7 @@ _buildPremiumButton(
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SommelierPage(
+        builder: (context) => SommelierPageV2(
   wineProfile: _wineProfile!,
 ),
       ),
