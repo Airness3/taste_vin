@@ -235,6 +235,123 @@ Widget _legendChip(
     ),
   );
 }
+String getBoucheEmoji(String code) {
+  switch (code) {
+    case 'VIF':
+      return '⚡';
+
+    case 'FRAIS':
+      return '❄️';
+
+    case 'ROND':
+      return '🟠';
+
+    case 'SOUPLE':
+      return '🪶';
+
+    case 'GRAS':
+      return '🧈';
+
+    case 'MINERAL':
+      return '🪨';
+
+    case 'PUISSANT':
+      return '💪';
+
+    case 'TANNIQUE':
+      return '🍇';
+
+    case 'STRUCTURE':
+      return '🏛️';
+
+    case 'LONG':
+      return '⏳';
+
+    case 'EQUILIBRE':
+      return '⚖️';
+
+    case 'PERSISTANT':
+      return '✨';
+
+    default:
+      return '🍷';
+  }
+}
+String getMetEmoji(String code) {
+  switch (code) {
+
+    case 'APERITIF_CANAPES': return '🥂';
+    case 'TAPAS': return '🍢';
+    case 'CHARCUTERIE': return '🥓';
+
+    case 'TERRINE': return '🍖';
+    case 'FOIE_GRAS': return '🦆';
+    case 'SALADE_LEGERE': return '🥗';
+    case 'SALADE_CHEVRE': return '🥗';
+    case 'QUICHE': return '🥧';
+    case 'SOUPE_LEGUMES': return '🍵';
+
+    case 'HUITRES': return '🦪';
+    case 'COQUILLAGES': return '🐚';
+    case 'CRUSTACES': return '🦞';
+    case 'SAINT_JACQUES': return '🐚';
+
+    case 'SUSHIS': return '🍣';
+    case 'POISSON_BLANC': return '🐟';
+    case 'POISSON_GRILLE': return '🔥';
+    case 'SAUMON': return '🐟';
+    case 'THON': return '🐟';
+    case 'BOUILLABAISSE': return '🍲';
+
+    case 'VOLAILLE_ROTIE': return '🍗';
+    case 'VEAU': return '🥩';
+    case 'PORC': return '🥓';
+    case 'CANARD': return '🦆';
+
+    case 'BOEUF_GRILLE': return '🥩';
+    case 'BOEUF_MIJOTE': return '🍲';
+    case 'AGNEAU': return '🐑';
+    case 'GIBIER': return '🦌';
+    case 'PLAT_SAUCE_ROUGE': return '🍲';
+    case 'BARBECUE': return '🔥';
+
+    case 'PIZZA_TOMATE': return '🍕';
+    case 'PATES_TOMATE': return '🍝';
+    case 'PATES_CREME': return '🍝';
+    case 'RISOTTO': return '🍚';
+
+    case 'CURRY_DOUX': return '🍛';
+    case 'CURRY_EPICE': return '🌶️';
+
+    case 'CUISINE_ASIATIQUE': return '🥢';
+    case 'COUSCOUS': return '🍲';
+    case 'CASSOULET': return '🍲';
+
+    case 'PLAT_VEGETARIEN': return '🥦';
+    case 'LEGUMES_GRILLES': return '🥕';
+    case 'CHAMPIGNONS': return '🍄';
+    case 'ASPERGES': return '🌱';
+
+    case 'FROMAGE_FRAIS': return '🧀';
+    case 'CHEVRE': return '🐐';
+    case 'PATE_MOLLE': return '🧀';
+    case 'PATE_PRESSEE': return '🧀';
+    case 'PERSILLE': return '🧀';
+    case 'PLATEAU_FROMAGES': return '🧀';
+
+    case 'DESSERT_FRUITS': return '🍓';
+    case 'TARTE_FRUITS': return '🥧';
+    case 'DESSERT_CHOCOLAT': return '🍫';
+    case 'DESSERT_CARAMEL': return '🍮';
+    case 'DESSERT_CREME': return '🍰';
+    case 'FRUITS_FRAIS': return '🍎';
+
+    case 'BRUNCH': return '🍳';
+
+    default:
+      return '🍽️';
+  }
+}
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       appBar: AppBar(
@@ -408,9 +525,25 @@ Text(
             Container(
   width: double.infinity,
   decoration: BoxDecoration(
-    color: const Color(0xFF1E1E1E),
-    borderRadius: BorderRadius.circular(24),
+  borderRadius: BorderRadius.circular(24),
+
+  gradient: const LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [
+      Color(0xFF252525),
+      Color(0xFF151515),
+    ],
   ),
+
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.25),
+      blurRadius: 20,
+      offset: const Offset(0, 8),
+    ),
+  ],
+),
   child: Padding(
     padding: const EdgeInsets.all(20),
     child: Column(
@@ -645,7 +778,7 @@ const SizedBox(height: 20),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    b['libelle'],
+                    '${getBoucheEmoji(b['code'])} ${b['libelle']}',
                     style: const TextStyle(
                       color: Colors.white,
                     ),
@@ -695,7 +828,7 @@ const SizedBox(height: 20),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Text(
-            accord['libelle'],
+            '${getMetEmoji(accord['code'])} ${accord['libelle']}',
             style: const TextStyle(
               color: Colors.white,
               fontSize: 16,

@@ -53,6 +53,8 @@ Future<void> _loadWine() async {
         await _recognitionService.findAppellation(
       widget.ocrText,
     );
+    print("APPELLATION RETOURNEE");
+print(appellation);
 
     final millesime =
         _recognitionService.extractMillesime(
@@ -93,6 +95,15 @@ Future<void> _loadWine() async {
   });
 
 }  
+}
+Future<void> _scanBackLabel() async {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      content: Text(
+        "Bouton contre-étiquette détecté ✅",
+      ),
+    ),
+  );
 }
 Widget _buildPremiumButton({
   required IconData icon,
@@ -391,6 +402,14 @@ _buildPremiumButton(
       ),
     );
   },
+),
+
+const SizedBox(height: 12),
+
+_buildPremiumButton(
+  icon: Icons.flip,
+  title: "Scanner la contre-étiquette",
+  onTap: _scanBackLabel,
 ),
 
 const SizedBox(height: 12),
