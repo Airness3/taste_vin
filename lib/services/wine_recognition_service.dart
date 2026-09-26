@@ -412,7 +412,30 @@ class WineRecognitionService {
 
     double bestSimilarity = 0.0;
 
-    for (final String candidate in ocrWords) {
+    final List<String> extendedOcrWords = [];
+
+for (int i = 0; i < ocrWords.length; i++) {
+  // mot normal
+  extendedOcrWords.add(ocrWords[i]);
+
+  // fusion de 2 mots
+  if (i < ocrWords.length - 1) {
+    extendedOcrWords.add(
+      ocrWords[i] + ocrWords[i + 1],
+    );
+  }
+
+  // fusion de 3 mots
+  if (i < ocrWords.length - 2) {
+    extendedOcrWords.add(
+      ocrWords[i] +
+          ocrWords[i + 1] +
+          ocrWords[i + 2],
+    );
+  }
+}
+
+    for (final String candidate in extendedOcrWords) {
       if (candidate.length < 4) {
         continue;
       }
@@ -438,9 +461,9 @@ class WineRecognitionService {
     }
 
     final double requiredSimilarity =
-        expectedWord.length <= 5
-            ? 0.80
-            : 0.78;
+    expectedWord.length <= 5
+        ? 0.85
+        : 0.82;
 
     return _WordMatch(
       found:
