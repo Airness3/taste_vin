@@ -7,12 +7,14 @@ import 'sommelier_page.dart';
 import 'cellar_page.dart';
 import 'favorites_page.dart';
 import 'package:taste_vin/pages/sommelier_page.dart';
+import 'package:image_picker/image_picker.dart';
+import '../services/ocr_service.dart';
 
 class ScanResultPage extends StatefulWidget {
   final String ocrText;
   final int couleurId;
   final String imagePath;
-
+  
   const ScanResultPage({
     super.key,
     required this.ocrText,
@@ -27,6 +29,8 @@ class ScanResultPage extends StatefulWidget {
 
 class _ScanResultPageState extends State<ScanResultPage> {
 
+final ImagePicker _picker = ImagePicker();
+final OcrService _ocrService = OcrService();
   final WineRecognitionService _recognitionService =
     WineRecognitionService();
 
@@ -60,6 +64,19 @@ print(appellation);
         _recognitionService.extractMillesime(
       widget.ocrText,
     );
+
+    final bool scanIncomplet =
+    appellation == null ||
+    millesime == null;
+
+    if (scanIncomplet && mounted) {
+  Future.delayed(
+    const Duration(milliseconds: 500),
+    () {
+      _showIncompleteScanDialog();
+    },
+  );
+}
 
     if (appellation == null) {
       setState(() {
@@ -97,14 +114,102 @@ print(appellation);
 }  
 }
 Future<void> _scanBackLabel() async {
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text(
-        "Bouton contre-étiquette détecté ✅",
+  try {
+    final image = await _picker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 85,
+    );
+
+    if (image == null) {
+      return;
+    }
+
+    final backText =
+        await _ocrService.readText(
+      File(image.path),
+    );
+
+    debugPrint(
+      '========== CONTRE ETIQUETTE =========='
+    );
+    debugPrint(backText);
+    debugPrint(
+      '======================================'
+    );
+
+    final backMillesime =
+    _recognitionService.extractMillesime(
+  backText,
+);
+
+debugPrint(
+  'Millesime contre etiquette : $backMillesime',
+);
+
+if (backMillesime != null) {
+  setState(() {
+    _millesime = backMillesime;
+  });
+}
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Contre-étiquette scannée ✅',
+        ),
       ),
-    ),
+    );
+  } catch (e) {
+    debugPrint(
+      'ERREUR CONTRE ETIQUETTE : $e',
+    );
+  }
+}
+
+Future<void> _showIncompleteScanDialog() async {
+  if (!mounted) return;
+
+  await showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text(
+  '🍷 Informations manquantes',
+),
+        content: const Text(
+  'Certaines informations n’ont pas pu être identifiées avec certitude.\n\n'
+  'La contre-étiquette contient souvent :\n'
+  '• le millésime\n'
+  '• l’appellation complète\n'
+  '• le nom du domaine\n\n'
+  'Souhaitez-vous scanner la contre-étiquette pour enrichir l’analyse ?',
+),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text(
+  'Continuer sans compléter',
+),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _scanBackLabel();
+            },
+            child: const Text(
+  'Scanner la contre-étiquette',
+),
+          ),
+        ],
+      );
+    },
   );
 }
+
 Widget _buildPremiumButton({
   required IconData icon,
   required String title,

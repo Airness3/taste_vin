@@ -473,17 +473,21 @@ Center(
   ),
 ),
 
-      const SizedBox(height: 12),
+      if (carafage != null &&
+    carafage['type'] != null &&
+    carafage['type']['libelle'] != null) ...[
+  const SizedBox(height: 12),
 
-      Text(
-        '🍾 ${carafage['type']['libelle']}',
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 18,
-        ),
-      ),
+  Text(
+    '🍾 ${carafage['type']['libelle']}',
+    style: const TextStyle(
+      color: Colors.white,
+      fontSize: 18,
+    ),
+  ),
 
-      const SizedBox(height: 12),
+  const SizedBox(height: 12),
+],
 
       Center(
   child: Image.asset(

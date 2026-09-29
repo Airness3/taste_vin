@@ -21,6 +21,36 @@ class _ScanCameraPageState extends State<ScanCameraPage> {
 
   bool isLoading = false;
 
+Future<void> _showScanTipsDialog() async {
+  return showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text(
+          '📸 Conseils pour un scan réussi',
+        ),
+        content: const Text(
+          '• Centre l’étiquette dans la photo\n\n'
+          '• Approche-toi suffisamment pour que le texte soit lisible\n\n'
+          '• Évite les reflets et les zones sombres\n\n'
+          '• Vérifie que la photo est nette avant de valider',
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              startScan();
+            },
+            child: const Text(
+              'Commencer le scan',
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
+
   Future<void> startScan() async {
     try {
       setState(() {
@@ -98,9 +128,10 @@ class _ScanCameraPageState extends State<ScanCameraPage> {
           color: Colors.white,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
+      body: SingleChildScrollView(
+  child: Padding(
+    padding: const EdgeInsets.all(24),
+    child: Column(
           children: [
             const SizedBox(height: 20),
 
@@ -129,7 +160,37 @@ class _ScanCameraPageState extends State<ScanCameraPage> {
             _buildColorButton("🫧 Effervescent", 4),
             _buildColorButton("🟠 Orange", 5),
 
-            const Spacer(),
+ Container(
+  padding: const EdgeInsets.all(16),
+  decoration: BoxDecoration(
+    color: Colors.green.shade50,
+    borderRadius: BorderRadius.circular(12),
+  ),
+  child: const Column(
+    children: [
+      Icon(
+        Icons.center_focus_strong,
+        color: Color(0xFF0A3D2E),
+      ),
+      SizedBox(height: 8),
+      Text(
+        "Centre l'étiquette et assure-toi que le texte est bien net.",
+        textAlign: TextAlign.center,
+      ),
+      SizedBox(height: 6),
+      Text(
+        "Évite les reflets, le flou et les photos prises de trop loin.",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.black54,
+          fontSize: 13,
+        ),
+      ),
+    ],
+  ),
+),
+
+            const SizedBox(height: 30),
 
             SizedBox(
               width: double.infinity,
@@ -143,7 +204,7 @@ class _ScanCameraPageState extends State<ScanCameraPage> {
                 ),
                 onPressed: selectedColorId == null || isLoading
                     ? null
-                    : startScan,
+                    : _showScanTipsDialog,
                 child: isLoading
                     ? const CircularProgressIndicator(
                         color: Colors.white,
@@ -162,6 +223,7 @@ class _ScanCameraPageState extends State<ScanCameraPage> {
             const SizedBox(height: 20),
           ],
         ),
+      ),
       ),
     );
   }
