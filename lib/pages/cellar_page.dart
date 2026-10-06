@@ -298,6 +298,32 @@ Future<void> _deleteWine(
     );
   }
 }
+  Future<void> _toggleFavorite(
+  Map<String, dynamic> wine,
+) async {
+  try {
+    final bool newValue =
+        !(wine['favori'] ?? false);
+
+    await supabase
+        .from('historique_scans')
+        .update({
+      'favori': newValue,
+    })
+        .eq(
+      'id',
+      wine['id'],
+    );
+
+    setState(() {
+      wine['favori'] = newValue;
+    });
+  } catch (e) {
+    debugPrint(
+      'ERREUR FAVORI : $e',
+    );
+  }
+}
   void _openSommelier(
     Map<String, dynamic> wine,
   ) {
@@ -644,6 +670,20 @@ Future<void> _deleteWine(
                     crossAxisAlignment:
                         CrossAxisAlignment.start,
                     children: [
+                      IconButton(
+  onPressed: () {
+    _toggleFavorite(wine);
+  },
+  icon: Icon(
+    wine['favori'] == true
+        ? Icons.favorite
+        : Icons.favorite_border,
+    color:
+        wine['favori'] == true
+            ? Colors.red
+            : Colors.grey,
+  ),
+),
                       Container(
                         width: 42,
                         height: 42,
