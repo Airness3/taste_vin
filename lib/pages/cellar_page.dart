@@ -135,7 +135,169 @@ class _CellarPageState extends State<CellarPage> {
       return null;
     }
   }
+Future<void> _confirmDeleteWine(
+  Map<String, dynamic> wine,
+) async {
+  final String appellation =
+      wine['appellation_nom']
+              ?.toString()
+              .trim() ??
+          'ce vin';
 
+  final bool? confirmed =
+      await showDialog<bool>(
+    context: context,
+    builder: (dialogContext) {
+      return AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(22),
+        ),
+        title: const Row(
+          children: [
+            Icon(
+              Icons.delete_outline,
+              color: Color(0xFF9A3040),
+            ),
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                'Supprimer cette fiche ?',
+                style: TextStyle(
+                  color: Color(0xFF15382E),
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ),
+          ],
+        ),
+        content: Text(
+          '« $appellation » sera supprimé de votre cave. '
+          'Cette action est définitive.',
+          style: const TextStyle(
+            color: Colors.black87,
+            height: 1.4,
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(
+                dialogContext,
+                false,
+              );
+            },
+            child: const Text(
+              'Annuler',
+              style: TextStyle(
+                color: Color(0xFF5F6965),
+              ),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.pop(
+                dialogContext,
+                true,
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor:
+                  const Color(0xFF9A3040),
+              foregroundColor: Colors.white,
+            ),
+            icon: const Icon(
+              Icons.delete_outline,
+            ),
+            label: const Text(
+              'Supprimer',
+            ),
+          ),
+        ],
+      );
+    },
+  );
+
+  if (confirmed != true) {
+    return;
+  }
+
+  await _deleteWine(wine);
+}
+
+Future<void> _deleteWine(
+  Map<String, dynamic> wine,
+) async {
+  try {
+    final dynamic scanId = wine['id'];
+    final String? imagePath =
+        wine['image_path']?.toString();
+
+    if (scanId == null) {
+      throw Exception(
+        'Identifiant de la fiche introuvable.',
+      );
+    }
+
+    // Suppression de la ligne dans historique_scans.
+    await supabase
+        .from('historique_scans')
+        .delete()
+        .eq('id', scanId);
+
+    // Suppression de la photo persistante.
+    // Les anciens chemins Android temporaires sont ignorés.
+    if (imagePath != null &&
+        imagePath.isNotEmpty &&
+        !imagePath.startsWith('/data/') &&
+        !imagePath.startsWith('file://')) {
+      try {
+        await supabase.storage
+            .from('scan-images')
+            .remove([
+          imagePath,
+        ]);
+      } catch (storageError) {
+        debugPrint(
+          'PHOTO NON SUPPRIMÉE : $storageError',
+        );
+      }
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _wines.removeWhere(
+        (item) => item['id'] == scanId,
+      );
+    });
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Fiche supprimée de votre cave.',
+        ),
+      ),
+    );
+  } catch (e) {
+    debugPrint(
+      'ERREUR SUPPRESSION CAVE : $e',
+    );
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context)
+        .showSnackBar(
+      SnackBar(
+        content: Text(
+          'Impossible de supprimer la fiche : $e',
+        ),
+      ),
+    );
+  }
+}
   void _openSommelier(
     Map<String, dynamic> wine,
   ) {
@@ -582,44 +744,67 @@ class _CellarPageState extends State<CellarPage> {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        _openSommelier(wine);
-                      },
-                      style:
-                          ElevatedButton.styleFrom(
-                        backgroundColor:
-                            const Color(
-                          0xFF0A3D2E,
-                        ),
-                        foregroundColor:
-                            Colors.white,
-                        elevation: 0,
-                        shape:
-                            RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(
-                            15,
-                          ),
-                        ),
-                      ),
-                      icon: const Icon(
-                        Icons.restaurant_menu,
-                        size: 20,
-                      ),
-                      label: const Text(
-                        'Voir la fiche sommelier',
-                        style: TextStyle(
-                          fontSize: 15,
-                          fontWeight:
-                              FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                  ),
+                  Row(
+  children: [
+    Expanded(
+      child: SizedBox(
+        height: 50,
+        child: ElevatedButton.icon(
+          onPressed: () {
+            _openSommelier(wine);
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor:
+                const Color(0xFF0A3D2E),
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius:
+                  BorderRadius.circular(15),
+            ),
+          ),
+          icon: const Icon(
+            Icons.restaurant_menu,
+            size: 19,
+          ),
+          label: const Text(
+            'Voir la fiche',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ),
+    ),
+    const SizedBox(width: 10),
+    SizedBox(
+      width: 52,
+      height: 50,
+      child: OutlinedButton(
+        onPressed: () {
+          _confirmDeleteWine(wine);
+        },
+        style: OutlinedButton.styleFrom(
+          foregroundColor:
+              const Color(0xFF9A3040),
+          side: const BorderSide(
+            color: Color(0xFF9A3040),
+          ),
+          padding: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(15),
+          ),
+        ),
+        child: const Icon(
+          Icons.delete_outline,
+          size: 22,
+        ),
+      ),
+    ),
+  ],
+),
                 ],
               ),
             ),
@@ -642,13 +827,15 @@ class _CellarPageState extends State<CellarPage> {
         },
         child: Stack(
           children: [
-            SizedBox(
-              width: double.infinity,
-              height: 210,
-              child: imageUrl != null
+            Container(
+  width: double.infinity,
+  height: 260,
+  color: const Color(0xFFF1EEE8),
+  padding: const EdgeInsets.all(10),
+  child: imageUrl != null
                   ? Image.network(
                       imageUrl,
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       loadingBuilder: (
                         context,
                         child,
@@ -730,7 +917,7 @@ class _CellarPageState extends State<CellarPage> {
   ) {
     return Container(
       width: double.infinity,
-      height: 210,
+      height: 260,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
