@@ -116,30 +116,78 @@ print(appellation);
 }  
 }
 Future<void> _addToCellar() async {
+  String? uploadedStoragePath;
+
   try {
     final user = supabase.auth.currentUser;
 
     if (user == null) {
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text(
-            'Vous devez être connecté.',
+            'Vous devez être connecté pour ajouter ce vin.',
           ),
         ),
       );
+
       return;
     }
+
+    if (_appellation == null) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Impossible d’ajouter ce vin : '
+            'l’appellation n’a pas été identifiée.',
+          ),
+        ),
+      );
+
+      return;
+    }
+
+    final File imageFile = File(widget.imagePath);
+
+    if (!await imageFile.exists()) {
+      throw Exception(
+        'La photo du scan est introuvable.',
+      );
+    }
+
+    final int timestamp =
+        DateTime.now().millisecondsSinceEpoch;
+
+    uploadedStoragePath =
+        '${user.id}/scan_$timestamp.jpg';
+
+    await supabase.storage
+        .from('scan-images')
+        .upload(
+          uploadedStoragePath,
+          imageFile,
+          fileOptions: const FileOptions(
+            cacheControl: '3600',
+            upsert: false,
+            contentType: 'image/jpeg',
+          ),
+        );
 
     await supabase
         .from('historique_scans')
         .insert({
       'profil_id': user.id,
-
       'appellation_nom': _appellation,
       'millesime': _millesime,
+      'wine_profile': _wineProfile,
       'couleur_id': widget.couleurId,
 
-      'image_path': widget.imagePath,
+      // On enregistre désormais le chemin Supabase,
+      // et non le chemin temporaire Android.
+      'image_path': uploadedStoragePath,
 
       'ocr_text': widget.ocrText,
 
@@ -149,7 +197,7 @@ Future<void> _addToCellar() async {
       'resume_scan':
           _appellation ?? 'Vin scanné',
 
-      'source_scan': 'fusion',
+      'source_scan': 'face_avant',
     });
 
     if (!mounted) return;
@@ -157,7 +205,7 @@ Future<void> _addToCellar() async {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          '✅ Vin ajouté à votre cave',
+          'Vin et photo ajoutés à votre cave.',
         ),
       ),
     );
@@ -165,7 +213,8 @@ Future<void> _addToCellar() async {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const CellarPage(),
+        builder: (context) =>
+            const CellarPage(),
       ),
     );
   } catch (e) {
@@ -173,12 +222,30 @@ Future<void> _addToCellar() async {
       'ERREUR AJOUT CAVE : $e',
     );
 
+    // Si la photo a été envoyée mais que l’insertion
+    // dans historique_scans échoue, on retire la photo
+    // pour éviter un fichier orphelin.
+    if (uploadedStoragePath != null) {
+      try {
+        await supabase.storage
+            .from('scan-images')
+            .remove([
+          uploadedStoragePath,
+        ]);
+      } catch (cleanupError) {
+        debugPrint(
+          'ERREUR NETTOYAGE PHOTO : '
+          '$cleanupError',
+        );
+      }
+    }
+
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'Erreur : $e',
+          'Impossible d’ajouter le vin : $e',
         ),
       ),
     );
