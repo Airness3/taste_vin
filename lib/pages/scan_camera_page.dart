@@ -26,14 +26,23 @@ Future<void> _showScanTipsDialog() async {
     context: context,
     builder: (context) {
       return AlertDialog(
+        backgroundColor: Colors.white,
         title: const Text(
           '📸 Conseils pour un scan réussi',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         content: const Text(
           '• Centre l’étiquette dans la photo\n\n'
           '• Approche-toi suffisamment pour que le texte soit lisible\n\n'
           '• Évite les reflets et les zones sombres\n\n'
           '• Vérifie que la photo est nette avant de valider',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16,
+          ),
         ),
         actions: [
           ElevatedButton(

@@ -9,6 +9,7 @@ import 'favorites_page.dart';
 import 'package:taste_vin/pages/sommelier_page.dart';
 import 'package:image_picker/image_picker.dart';
 import '../services/ocr_service.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ScanResultPage extends StatefulWidget {
   final String ocrText;
@@ -31,6 +32,7 @@ class _ScanResultPageState extends State<ScanResultPage> {
 
 final ImagePicker _picker = ImagePicker();
 final OcrService _ocrService = OcrService();
+final supabase = Supabase.instance.client;
   final WineRecognitionService _recognitionService =
     WineRecognitionService();
 
@@ -112,6 +114,75 @@ print(appellation);
   });
 
 }  
+}
+Future<void> _addToCellar() async {
+  try {
+    final user = supabase.auth.currentUser;
+
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Vous devez être connecté.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    await supabase
+        .from('historique_scans')
+        .insert({
+      'profil_id': user.id,
+
+      'appellation_nom': _appellation,
+      'millesime': _millesime,
+      'couleur_id': widget.couleurId,
+
+      'image_path': widget.imagePath,
+
+      'ocr_text': widget.ocrText,
+
+      'date_scan':
+          DateTime.now().toIso8601String(),
+
+      'resume_scan':
+          _appellation ?? 'Vin scanné',
+
+      'source_scan': 'fusion',
+    });
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          '✅ Vin ajouté à votre cave',
+        ),
+      ),
+    );
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const CellarPage(),
+      ),
+    );
+  } catch (e) {
+    debugPrint(
+      'ERREUR AJOUT CAVE : $e',
+    );
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'Erreur : $e',
+        ),
+      ),
+    );
+  }
 }
 Future<void> _scanBackLabel() async {
   try {
@@ -522,14 +593,7 @@ const SizedBox(height: 12),
 _buildPremiumButton(
   icon: Icons.wine_bar,
   title: "Ajouter à ma cave",
-  onTap: () {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const CellarPage(),
-      ),
-    );
-  },
+  onTap: _addToCellar,
 ),
 
 const SizedBox(height: 12),
